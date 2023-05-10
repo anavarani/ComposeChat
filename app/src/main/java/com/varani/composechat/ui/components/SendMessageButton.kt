@@ -3,6 +3,7 @@ package com.varani.composechat.ui.components
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,13 +18,16 @@ import com.varani.composechat.R
  */
 @Composable
 fun SendMessageButton(
+    isEnabled: Boolean,
     onSendMessageClick: () -> Unit
 ) {
     Button(
         onClick = onSendMessageClick,
         shape = MaterialTheme.shapes.large,
+        enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.primary
+            backgroundColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high),
+            disabledBackgroundColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled),
         ),
         modifier = Modifier
             .size(48.dp)

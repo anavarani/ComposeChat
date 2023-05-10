@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ComposeChat</string>
     <string name="message_delivered">Message delivered</string>
+    <string name="message_text_field_placeholder">Message</string>
 </resources>
