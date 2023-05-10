@@ -17,10 +17,10 @@ import com.varani.composechat.R
  */
 @Composable
 fun SendMessageButton(
-    onClick: () -> Unit
+    onSendMessageClick: () -> Unit
 ) {
     Button(
-        onClick = onClick,
+        onClick = onSendMessageClick,
         shape = MaterialTheme.shapes.large,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.primary

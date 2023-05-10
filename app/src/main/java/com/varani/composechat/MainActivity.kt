@@ -7,17 +7,21 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.varani.composechat.model.Message
 import com.varani.composechat.ui.components.MessageBarTextField
 import com.varani.composechat.ui.components.MessageBubble
 import com.varani.composechat.ui.components.SendMessageButton
 import com.varani.composechat.ui.theme.ComposeChatTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,13 +34,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ComposeChatApp(modifier: Modifier = Modifier) {
+fun ComposeChatApp(
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel()
+) {
     Scaffold(
         modifier = modifier,
         topBar = { ChatTopBar() },
         bottomBar = { ChatMessageBar() }
     ) { innerPadding ->
         ChatSection(
+            viewModel.messageList,
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -49,7 +57,10 @@ fun ChatTopBar() {
 }
 
 @Composable
-fun ChatMessageBar() {
+fun ChatMessageBar(
+    viewModel: MainViewModel = hiltViewModel()
+) {
+    var text by remember { mutableStateOf(TextFieldValue("")) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -57,19 +68,26 @@ fun ChatMessageBar() {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
-        MessageBarTextField(modifier = Modifier.weight(1f))
+        MessageBarTextField(
+            text = text,
+            onTextChange = { text = it },
+            modifier = Modifier.weight(1f)
+        )
         Spacer(modifier = Modifier.size(18.dp))
-        SendMessageButton { }
+        SendMessageButton { viewModel.sendMessage(Message.Sender(text.text)) }
     }
 }
 
 @Composable
-fun ChatSection(modifier: Modifier) {
+fun ChatSection(
+    messageList: List<Message>,
+    modifier: Modifier,
+) {
     LazyColumn(
         modifier = modifier.padding(16.dp),
-        reverseLayout = true,
+        verticalArrangement = Arrangement.Bottom,
     ) {
-        items(messagesStub) { message ->
+        items(messageList) { message ->
             Row(
                 horizontalArrangement = message.arrangement,
                 modifier = Modifier
@@ -89,11 +107,3 @@ fun DefaultPreview() {
         ComposeChatApp(Modifier.fillMaxSize())
     }
 }
-
-val messagesStub = listOf(
-    Message.Sender(text = "Sender"),
-    Message.Receiver(text = "Receiver"),
-    Message.Receiver(text = "Receiver"),
-    Message.Sender(text = "Sender"),
-    Message.Receiver(text = "Receiver"),
-)
