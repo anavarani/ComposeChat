@@ -4,15 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.varani.composechat.model.Message
+import com.varani.composechat.ui.components.MessageBarTextField
+import com.varani.composechat.ui.components.MessageBubble
+import com.varani.composechat.ui.components.SendMessageButton
 import com.varani.composechat.ui.theme.ComposeChatTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,7 +36,11 @@ fun ComposeChatApp(modifier: Modifier = Modifier) {
         topBar = { ChatTopBar() },
         bottomBar = { ChatMessageBar() }
     ) { innerPadding ->
-        ChatSection(Modifier.padding(innerPadding))
+        ChatSection(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        )
     }
 }
 
@@ -43,53 +50,36 @@ fun ChatTopBar() {
 
 @Composable
 fun ChatMessageBar() {
-    var text by remember { mutableStateOf(TextFieldValue("")) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
-        OutlinedTextField(
-            value = text,
-            onValueChange = {
-                text = it
-            },
-            singleLine = true,
-            shape = MaterialTheme.shapes.large,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high),
-                unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled),
-                trailingIconColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high),
-                disabledTrailingIconColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled),
-                textColor = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.high),
-                disabledTextColor = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.disabled),
-            ),
-            modifier = Modifier.weight(1f)
-        )
+        MessageBarTextField(modifier = Modifier.weight(1f))
         Spacer(modifier = Modifier.size(18.dp))
-        Button(
-            onClick = { },
-            shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = MaterialTheme.colors.primary
-            ),
-            modifier = Modifier
-                .size(48.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.send_icon),
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+        SendMessageButton { }
     }
 }
 
 @Composable
 fun ChatSection(modifier: Modifier) {
-
+    LazyColumn(
+        modifier = modifier.padding(16.dp),
+        reverseLayout = true,
+    ) {
+        items(messagesStub) { message ->
+            Row(
+                horizontalArrangement = message.arrangement,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                MessageBubble(message = message)
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+        }
+    }
 }
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
@@ -99,3 +89,11 @@ fun DefaultPreview() {
         ComposeChatApp(Modifier.fillMaxSize())
     }
 }
+
+val messagesStub = listOf(
+    Message.Sender(text = "Sender"),
+    Message.Receiver(text = "Receiver"),
+    Message.Receiver(text = "Receiver"),
+    Message.Sender(text = "Sender"),
+    Message.Receiver(text = "Receiver"),
+)
