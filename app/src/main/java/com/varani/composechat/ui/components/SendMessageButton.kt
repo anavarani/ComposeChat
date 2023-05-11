@@ -1,14 +1,12 @@
 package com.varani.composechat.ui.components
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.varani.composechat.R
@@ -21,13 +19,14 @@ fun SendMessageButton(
     isEnabled: Boolean,
     onSendMessageClick: () -> Unit
 ) {
-    Button(
+    IconButton(
         onClick = onSendMessageClick,
-        shape = MaterialTheme.shapes.large,
         enabled = isEnabled,
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high),
-            disabledBackgroundColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled),
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 1f),
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.38f),
         ),
         modifier = Modifier
             .size(48.dp)
@@ -35,7 +34,6 @@ fun SendMessageButton(
         Icon(
             painter = painterResource(id = R.drawable.send_icon),
             contentDescription = null,
-            tint = Color.White
         )
     }
 }
