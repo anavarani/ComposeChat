@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,13 +37,15 @@ fun ComposeChatApp(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel()
 ) {
+    val conversation by viewModel.messageList.collectAsState()
+
     Scaffold(
         modifier = modifier,
         topBar = { ChatTopAppBar {} },
         bottomBar = { MessageBottomBar() }
     ) { innerPadding ->
         ChatSection(
-            viewModel.messageList,
+            conversation,
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding)

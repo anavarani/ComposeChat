@@ -1,12 +1,15 @@
 package com.varani.composechat
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.varani.composechat.data.ChatRepository
 import com.varani.composechat.model.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -15,25 +18,42 @@ import javax.inject.Inject
  * Created by Ana Varani on 10/05/2023.
  */
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(
+    private val chatRepository: ChatRepository
+) : ViewModel() {
+
+    private val chatId = 1 // Mock for simplicity
+
+    val messageList: StateFlow<List<Message>> = chatRepository.getConversation(chatId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList(),
+        )
 
     private var timestampJob: Job? = null
 
-    private val _messageList: MutableList<Message> = mutableStateListOf(
-        Message.SectionLabel(LocalDateTime.now().toSectioningLabel())
-    )
-    val messageList = _messageList
-
-    fun sendMessage(message: Message) {
-        _messageList.add(message)
-        addLabelSectioning(message.createAt)
+    init {
+        viewModelScope.launch {
+            chatRepository.createChat(chatId)
+        }
     }
 
-    private fun addLabelSectioning(lastMessageTimestamp: LocalDateTime) {
+    fun sendMessage(message: Message) {
+        viewModelScope.launch {
+            chatRepository.addNewMessageToConversation(chatId, message)
+            startTimerForLabelSectioning(message.createAt)
+        }
+    }
+
+    private fun startTimerForLabelSectioning(lastMessageTimestamp: LocalDateTime) {
         timestampJob?.cancel()
         timestampJob = viewModelScope.launch {
-            delay(3000L) // TODO change to 60 * 60 * 100 (1 hour)
-            _messageList.add(Message.SectionLabel(lastMessageTimestamp.toSectioningLabel()))
+            delay(10000L) // TODO change to 60 * 60 * 1000 (1 hour)
+            chatRepository.addNewMessageToConversation(
+                chatId,
+                Message.SectionLabel(lastMessageTimestamp.toSectioningLabel())
+            )
         }
     }
 }

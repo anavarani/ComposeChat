@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.varani.composechat.MainViewModel
 import com.varani.composechat.model.Message
-import com.varani.composechat.toAnnotatedString
 
 /**
  * Created by Ana Varani on 11/05/2023.
@@ -28,7 +27,7 @@ import com.varani.composechat.toAnnotatedString
 fun MessageBottomBar(
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    var text by remember { mutableStateOf(TextFieldValue("")) }
+    var textField by remember { mutableStateOf(TextFieldValue("")) }
     var isSender by remember { mutableStateOf(true) }
 
     Surface(modifier = Modifier.shadow(12.dp)) {
@@ -41,20 +40,20 @@ fun MessageBottomBar(
             SwitchComposable(isSender) { isSender = !isSender }
             Spacer(modifier = Modifier.size(18.dp))
             MessageBarTextField(
-                text = text,
-                onTextChange = { text = it },
+                text = textField,
+                onTextChange = { textField = it },
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.size(18.dp))
-            SendMessageButton(text.text.isNotBlank()) {
+            SendMessageButton(textField.text.isNotBlank()) {
                 viewModel.sendMessage(
                     if (isSender) {
-                        Message.Sender(text.text.toAnnotatedString())
+                        Message.Sender(textField.text)
                     } else {
-                        Message.Receiver(text.text.toAnnotatedString())
+                        Message.Receiver(textField.text)
                     }
                 )
-                text = TextFieldValue("")
+                textField = TextFieldValue("")
             }
         }
     }

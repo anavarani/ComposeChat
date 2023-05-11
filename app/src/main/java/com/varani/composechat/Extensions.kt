@@ -10,26 +10,23 @@ import java.time.format.DateTimeFormatter
 /**
  * Created by Ana Varani on 10/05/2023.
  */
-fun LocalDateTime.toSectioningLabel(): AnnotatedString = run {
+fun LocalDateTime.toSectioningLabel(): String = run {
 
-    val formatter = DateTimeFormatter.ofPattern("H:mm")
-    val time = format(formatter)
+    val formatter = DateTimeFormatter.ofPattern("EEEE H:mm")
+    format(formatter)
+}
 
+fun String.toAnnotatedString(): AnnotatedString = run {
+    val dayOfTheWeek = this.split(" ")
     AnnotatedString(
-        text = dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() },
+        text = dayOfTheWeek[0],
         spanStyle = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 12.sp)
     ).plus(
         AnnotatedString(" ")
     ).plus(
         AnnotatedString(
-            text = time,
+            text = dayOfTheWeek[1],
             spanStyle = SpanStyle(fontSize = 12.sp)
         )
-    )
-}
-
-fun String.toAnnotatedString(): AnnotatedString = run {
-    AnnotatedString(
-        this
     )
 }
