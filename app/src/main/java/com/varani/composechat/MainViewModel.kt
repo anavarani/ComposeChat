@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Clock
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -19,7 +20,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val chatRepository: ChatRepository
+    private val chatRepository: ChatRepository,
+    clock: Clock
 ) : ViewModel() {
 
     private val chatId = 1 // Mock for simplicity
@@ -28,7 +30,11 @@ class MainViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList(),
+            initialValue = listOf(
+                Message.SectionLabel(
+                    LocalDateTime.now(clock).toSectioningLabel()
+                )
+            ),
         )
 
     private var timestampJob: Job? = null

@@ -10,6 +10,12 @@ import java.time.format.DateTimeFormatter
 /**
  * Created by Ana Varani on 10/05/2023.
  */
+val Any.TAG: String
+    get() {
+        val name = javaClass.simpleName
+        return if (name.length <= 23) name else name.substring(0, 23)
+    }
+
 fun LocalDateTime.toSectioningLabel(): String = run {
 
     val formatter = DateTimeFormatter.ofPattern("EEEE H:mm")

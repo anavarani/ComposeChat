@@ -1,4 +1,4 @@
-package com.varani.composechat.di
+package com.varani.composechat.data.di
 
 import android.content.Context
 import androidx.room.Room

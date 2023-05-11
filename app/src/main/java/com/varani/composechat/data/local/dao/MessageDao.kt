@@ -17,6 +17,6 @@ interface MessageDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(message: MessageEntity)
 
-    @Query("SELECT * from $MESSAGE_TABLE WHERE chat_id=:chatId ORDER by created_at DESC")
+    @Query("SELECT * from $MESSAGE_TABLE WHERE chat_id=:chatId ORDER by created_at ASC")
     fun getAllMessagesForChat(chatId: Int): Flow<List<MessageEntity>>
 }
