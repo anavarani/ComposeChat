@@ -1,6 +1,6 @@
 package com.varani.composechat
 
-import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.varani.composechat.model.Message
@@ -19,7 +19,9 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     private var timestampJob: Job? = null
 
-    private val _messageList = messagesStub.toMutableStateList()
+    private val _messageList: MutableList<Message> = mutableStateListOf(
+        Message.SectionLabel(LocalDateTime.now().toSectioningLabel())
+    )
     val messageList = _messageList
 
     fun sendMessage(message: Message) {
@@ -35,11 +37,3 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 }
-
-val messagesStub = mutableListOf(
-    Message.Sender(text = "Hi".toAnnotatedString()),
-    Message.Receiver(text = "Hey".toAnnotatedString()),
-    Message.Receiver(text = "Is my bubble gray?".toAnnotatedString()),
-    Message.Sender(text = "Yes, it is! Mine is magenta.".toAnnotatedString()),
-    Message.Receiver(text = "Awesome!".toAnnotatedString()),
-)
