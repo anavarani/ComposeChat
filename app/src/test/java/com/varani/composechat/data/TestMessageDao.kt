@@ -28,4 +28,8 @@ class TestMessageDao : MessageDao {
             it.toEntity(1)
         })
     }
+
+    override suspend fun isEmpty(chatId: Int): Boolean {
+        return true
+    }
 }

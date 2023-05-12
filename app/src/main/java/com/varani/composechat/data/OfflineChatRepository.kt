@@ -6,8 +6,10 @@ import com.varani.composechat.data.local.entities.ChatEntity
 import com.varani.composechat.data.local.entities.toExternalModel
 import com.varani.composechat.model.Message
 import com.varani.composechat.model.toEntity
+import com.varani.composechat.toSectioningLabel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class OfflineChatRepository @Inject constructor(
@@ -25,5 +27,10 @@ class OfflineChatRepository @Inject constructor(
 
     override suspend fun createChat(id: Int) {
         chatDao.insert(ChatEntity(id))
+        if (messageDao.isEmpty(id)) {
+            messageDao.insert(
+                Message.SectionLabel(LocalDateTime.now().toSectioningLabel()).toEntity(id)
+            )
+        }
     }
 }

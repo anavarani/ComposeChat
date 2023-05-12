@@ -11,8 +11,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.MockitoAnnotations
-import java.time.Clock
-import java.time.LocalDateTime
 
 
 /**
@@ -26,30 +24,22 @@ class MainViewModelTest {
 
     private var testRepository = TestChatRepository()
 
-    private lateinit var clock: Clock
-
     private lateinit var sut: MainViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
 
-        clock = Clock.systemDefaultZone()
-
         sut = MainViewModel(
-            testRepository,
-            clock
+            testRepository
         )
     }
 
     @Test
-    fun `when initialised, state is an list with a single section label`() = runTest {
+    fun `when initialised, state is an empty list`() = runTest {
         sut.messageList.test {
             val initialState = awaitItem()
-            val label = Message.SectionLabel(LocalDateTime.now(clock).toSectioningLabel())
-            assertEquals(listOf(label), initialState)
-            advanceTimeBy(11000L)
-            assertEquals(1, initialState.size)
+            assertEquals(emptyList<Message>(), initialState)
         }
     }
 
