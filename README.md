@@ -24,6 +24,14 @@ The chosen design pattern for this app was `MVVM`, following the [official archi
 - A shadow was added to separate the 3 slots.
 - `Unit tests` were created to test the `business logic` of the app
 
+## Screenshots
+
+<img src="docs/images/new_conversation_dark.png" width="200" /> <img src="docs/images/new_conversation_light.png" width="200" />
+
+<img src="docs/images/ongoing_conversation_dark.png" width="200" /> <img src="docs/images/ongoing_conversation_light.png" width="200" />
+
+<img src="docs/images/components_enabled.png" width="200" />
+
 # MessageBottomBar
 - Both text field and Send button have an alpha applied when they are `disabled/unfocused`.
 - The Send button is enabled only when at least a single character is added to the text field
@@ -55,6 +63,7 @@ To test this functionality, go to `App Inspection`, select the `com.varani.compo
     - Once a new message is sent, a `coroutine` is launched with a delay of 10 seconds.
         - The `coroutine` job is cancelled if a new message arrives
         - A section label is added once 10 seconds has passed with no new messages from the user
+- To clean the chat, go to `App info` > `Clear storage`
 
 ## Next steps/nice to have
 
