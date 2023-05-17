@@ -1,17 +1,16 @@
 package com.varani.composechat
 
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.varani.composechat.data.ChatRepository
 import com.varani.composechat.model.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 /**
@@ -22,16 +21,19 @@ class MainViewModel @Inject constructor(
     private val chatRepository: ChatRepository,
 ) : ViewModel() {
 
-    private val chatId = 1 // Mock for simplicity
+    private val chatId = 1 // TODO replace hardcoded value
 
-    val messageList: StateFlow<List<Message>> = chatRepository.getConversation(chatId)
+    val uiState: StateFlow<ConversationUiState> = chatRepository.getConversation(chatId)
+        .map {
+            ConversationUiState(chatId.toString(), it) { msg ->
+                sendMessage(msg)
+            }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList(),
+            initialValue = ConversationUiState(chatId.toString(), emptyList()) {},
         )
-
-    private var timestampJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -42,18 +44,21 @@ class MainViewModel @Inject constructor(
     fun sendMessage(message: Message) {
         viewModelScope.launch {
             chatRepository.addNewMessageToConversation(chatId, message)
-            startTimerForLabelSectioning(message.createAt)
         }
     }
+}
 
-    private fun startTimerForLabelSectioning(lastMessageTimestamp: LocalDateTime) {
-        timestampJob?.cancel()
-        timestampJob = viewModelScope.launch {
-            delay(10000L) // TODO change to 60 * 60 * 1000 (1 hour)
-            chatRepository.addNewMessageToConversation(
-                chatId,
-                Message.SectionLabel(lastMessageTimestamp.toSectioningLabel())
-            )
-        }
+class ConversationUiState(
+    val channelName: String,
+    initialMessages: List<Message>,
+    val onMessageSent: (Message) -> Unit
+) {
+
+    private val _messages: MutableList<Message> = initialMessages.toMutableStateList()
+    val messages: List<Message> = _messages
+
+    fun addMessage(msg: Message) {
+        _messages.add(0, msg)
+        onMessageSent(msg)
     }
 }

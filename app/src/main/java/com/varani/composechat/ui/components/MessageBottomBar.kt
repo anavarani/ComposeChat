@@ -25,7 +25,7 @@ import com.varani.composechat.model.Message
  */
 @Composable
 fun MessageBottomBar(
-    viewModel: MainViewModel = hiltViewModel()
+    onMessageSent: (Message) -> Unit
 ) {
     var textField by remember { mutableStateOf(TextFieldValue("")) }
     var isSender by remember { mutableStateOf(true) }
@@ -46,7 +46,7 @@ fun MessageBottomBar(
             )
             Spacer(modifier = Modifier.size(18.dp))
             SendMessageButton(textField.text.isNotBlank()) {
-                viewModel.sendMessage(
+                onMessageSent(
                     if (isSender) {
                         Message.Sender(textField.text)
                     } else {

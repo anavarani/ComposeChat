@@ -21,6 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.varani.composechat.R
@@ -30,7 +32,7 @@ import com.varani.composechat.R
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatTopAppBar(onNavigationClick: () -> Unit) {
+fun ChatTopAppBar(channelName: String, onNavigationClick: () -> Unit) {
     TopAppBar(
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
@@ -56,8 +58,9 @@ fun ChatTopAppBar(onNavigationClick: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Android",
-                    fontSize = 20.sp
+                    text = stringResource(id = R.string.channel_name, channelName),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center
                 )
             }
         },

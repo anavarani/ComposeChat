@@ -37,15 +37,23 @@ fun ComposeChatApp(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val conversation by viewModel.messageList.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier,
-        topBar = { ChatTopAppBar {} },
-        bottomBar = { MessageBottomBar() }
+        topBar = {
+            ChatTopAppBar(
+                channelName = uiState.channelName
+            ) {}
+        },
+        bottomBar = {
+            MessageBottomBar {
+                uiState.addMessage(it)
+            }
+        }
     ) { innerPadding ->
         ChatSection(
-            conversation,
+            uiState.messages,
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
