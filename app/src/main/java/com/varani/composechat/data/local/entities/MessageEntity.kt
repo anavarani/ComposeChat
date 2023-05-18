@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.varani.composechat.data.local.entities.MessageEntity.Companion.MESSAGE_TABLE
 import com.varani.composechat.model.Message
 import java.time.LocalDateTime
+import java.util.UUID
 
 /**
  * Created by Ana Varani on 11/05/2023.
@@ -15,20 +16,20 @@ import java.time.LocalDateTime
     tableName = MESSAGE_TABLE,
     foreignKeys = [
         ForeignKey(
-            entity = ChatEntity::class,
-            parentColumns = [ChatEntity.CHAT_ID],
-            childColumns = [MessageEntity.CHAT_ID],
+            entity = ChannelEntity::class,
+            parentColumns = [ChannelEntity.CHANNEL_ID],
+            childColumns = [MessageEntity.CHANNEL_ID],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class MessageEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = MESSAGE_ID)
-    val id: Int = 0,
+    val id: UUID = UUID.randomUUID(),
 
-    @ColumnInfo(name = CHAT_ID)
-    val chatId: Int = 0,
+    @ColumnInfo(name = CHANNEL_ID)
+    val channelId: UUID,
 
     @ColumnInfo(name = MESSAGE_TYPE_COLUMN)
     val messageType: TYPE,
@@ -48,8 +49,8 @@ data class MessageEntity(
 
     companion object {
         const val MESSAGE_TABLE = "message"
-        const val MESSAGE_ID = "_id"
-        const val CHAT_ID = "chat_id"
+        const val MESSAGE_ID = "id"
+        const val CHANNEL_ID = "channel_id"
         const val MESSAGE_TYPE_COLUMN = "type"
         const val MESSAGE_TEXT = "text"
         const val CREATED_AT = "created_at"

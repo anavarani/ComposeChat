@@ -3,19 +3,9 @@ package com.varani.composechat
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.varani.composechat.ui.components.ChatSection
-import com.varani.composechat.ui.components.ChatTopAppBar
-import com.varani.composechat.ui.components.MessageBottomBar
+import com.varani.composechat.ui.AppNavHost
 import com.varani.composechat.ui.theme.ComposeChatTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,39 +15,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeChatTheme {
-                ComposeChatApp(Modifier.fillMaxSize())
+                AppNavHost()
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ComposeChatApp(
-    modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel()
-) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            ChatTopAppBar(
-                channelName = uiState.channelName
-            ) {}
-        },
-        bottomBar = {
-            MessageBottomBar {
-                uiState.addMessage(it)
-            }
-        }
-    ) { innerPadding ->
-        ChatSection(
-            uiState.messages,
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        )
     }
 }
 
@@ -65,6 +25,6 @@ fun ComposeChatApp(
 @Composable
 fun DefaultPreview() {
     ComposeChatTheme {
-        ComposeChatApp(Modifier.fillMaxSize())
+        AppNavHost()
     }
 }

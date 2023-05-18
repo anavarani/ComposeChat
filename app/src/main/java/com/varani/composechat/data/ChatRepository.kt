@@ -1,13 +1,19 @@
 package com.varani.composechat.data
 
 import com.varani.composechat.model.Message
+import com.varani.composechat.ui.channel.Channel
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 interface ChatRepository {
 
-    fun getConversation(chatId: Int): Flow<List<Message>>
+    fun getConversation(channelId: UUID): Flow<List<Message>>
 
-    suspend fun addNewMessageToConversation(id: Int, message: Message)
+    fun getChannels(): Flow<List<Channel>>
 
-    suspend fun createChat(id: Int)
+    suspend fun addNewMessageToConversation(channelId: UUID, message: Message)
+
+    suspend fun createChannel(channel: Channel)
+
+    fun getChannelName(channelId: UUID): Flow<String>
 }

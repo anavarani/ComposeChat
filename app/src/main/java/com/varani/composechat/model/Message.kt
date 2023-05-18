@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.dp
 import com.varani.composechat.R
 import com.varani.composechat.data.local.entities.MessageEntity
 import java.time.LocalDateTime
+import java.util.UUID
 
 /**
  * Created by Ana Varani on 09/05/2023.
@@ -43,9 +44,9 @@ sealed class Message {
     }
 }
 
-fun Message.toEntity(chatId: Int) = run {
+fun Message.toEntity(channelId: UUID) = run {
     MessageEntity(
-        chatId = chatId,
+        channelId = channelId,
         messageType = this.toEnumType(),
         text = text
     )

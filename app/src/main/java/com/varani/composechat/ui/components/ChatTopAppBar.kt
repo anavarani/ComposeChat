@@ -32,7 +32,11 @@ import com.varani.composechat.R
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatTopAppBar(channelName: String, onNavigationClick: () -> Unit) {
+fun ChatTopAppBar(
+    channelName: String,
+    showChannelImage: Boolean = false,
+    onNavigationClick: () -> Unit
+) {
     TopAppBar(
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
@@ -48,14 +52,16 @@ fun ChatTopAppBar(channelName: String, onNavigationClick: () -> Unit) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.profile_picture),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                )
+                if (showChannelImage) {
+                    Image(
+                        painter = painterResource(id = R.drawable.profile_picture),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                    )
+                }
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = stringResource(id = R.string.channel_name, channelName),

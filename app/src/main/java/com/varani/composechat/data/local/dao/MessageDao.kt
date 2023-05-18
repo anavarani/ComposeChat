@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.varani.composechat.data.local.entities.MessageEntity
 import com.varani.composechat.data.local.entities.MessageEntity.Companion.MESSAGE_TABLE
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 /**
  * Created by Ana Varani on 11/05/2023.
@@ -17,9 +18,9 @@ interface MessageDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(message: MessageEntity)
 
-    @Query("SELECT (SELECT COUNT(*) FROM message WHERE chat_id = :chatId) == 0")
-    suspend fun isEmpty(chatId: Int): Boolean
+    @Query("SELECT (SELECT COUNT(*) FROM message WHERE channel_id=:channelId) == 0")
+    suspend fun isEmpty(channelId: UUID): Boolean
 
-    @Query("SELECT * from $MESSAGE_TABLE WHERE chat_id=:chatId ORDER by created_at DESC")
-    fun getAllMessagesForChat(chatId: Int): Flow<List<MessageEntity>>
+    @Query("SELECT * from $MESSAGE_TABLE WHERE channel_id=:channelId ORDER by created_at DESC")
+    fun getAllMessagesForChat(channelId: UUID): Flow<List<MessageEntity>>
 }
